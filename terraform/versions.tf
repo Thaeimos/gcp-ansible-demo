@@ -3,11 +3,11 @@ terraform {
 
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = "5.18.0"
     }
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = "3.6.0"
     }
     tls = {
@@ -19,6 +19,6 @@ terraform {
 
 provider "google" {
   # credentials = file(var.gcp_auth_file)
-  project     = var.project
-  region      = var.region
+  project = var.project
+  region  = var.region
 }
