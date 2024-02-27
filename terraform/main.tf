@@ -43,11 +43,16 @@ resource "local_file" "ssh_private_key_pem" {
   file_permission = "0400"
 }
 
+# Whitelist only my IP
+data "http" "myip" {
+  url = "https://ipv4.icanhazip.com"
+}
+
 resource "google_compute_firewall" "allow_ssh" {
   name          = "allow-ssh"
   network       = google_compute_network.vpc_network.name
   target_tags   = ["allow-ssh"]
-  source_ranges = ["0.0.0.0/0"] # TODO Whitelist my IP
+  source_ranges = ["${chomp(data.http.myip.response_body)}/32"]
 
   allow {
     protocol = "tcp"
