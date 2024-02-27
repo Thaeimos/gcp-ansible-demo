@@ -13,7 +13,13 @@ resource "google_project_service" "project" {
 data "google_project" "project" {}
 data "google_storage_project_service_account" "gcs_account" {}
 
-# Remote state bucket creation
+# Remote state bucket creation - Delay 60 secs
+resource "time_sleep" "wait" {
+  depends_on = [google_project_service.project]
+
+  create_duration = "60s"
+}
+
 resource "random_id" "bucket_prefix" {
   byte_length = 8
 }
