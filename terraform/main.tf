@@ -1,7 +1,7 @@
 resource "google_project_service" "project" {
-    for_each = toset(local.apis)
-    project = var.project
-    service = each.key
+  for_each = toset(local.apis)
+  project  = var.project
+  service  = each.key
 }
 
 data "google_project" "project" {}
@@ -12,23 +12,23 @@ data "google_client_openid_userinfo" "me" {}
 data "google_compute_zones" "available" {}
 
 resource "google_compute_network" "vpc_network" {
-    name                    = "vpc-${var.project}"
-    auto_create_subnetworks = false
-    mtu                     = 1460
+  name                    = "vpc-${var.project}"
+  auto_create_subnetworks = false
+  mtu                     = 1460
 }
 
 resource "google_compute_subnetwork" "default" {
-    for_each = { for idx, cidr_block in data.google_compute_zones.available.names: cidr_block => idx }
+  for_each = { for idx, cidr_block in data.google_compute_zones.available.names : cidr_block => idx }
 
-    name          = "subnet-${each.key}"
-    ip_cidr_range = cidrsubnet(var.subnet_cidr, 8, each.value)
-    region        = var.region 
-    network       = google_compute_network.vpc_network.id
+  name          = "subnet-${each.key}"
+  ip_cidr_range = cidrsubnet(var.subnet_cidr, 8, each.value)
+  region        = var.region
+  network       = google_compute_network.vpc_network.id
 }
 
 # Create ansible instances
 resource "random_id" "suffix" {
-    byte_length = 8
+  byte_length = 8
 }
 
 # SSH
@@ -61,28 +61,35 @@ data "google_compute_image" "my_image" {
 }
 
 resource "google_compute_instance" "ansible" {
-    for_each = toset(data.google_compute_zones.available.names)
+  for_each = toset(data.google_compute_zones.available.names)
 
-    name         = "vm-ansible-${random_id.suffix.hex}-${each.key}"
-    machine_type = "e2-small"
-    zone         = each.key
+  name         = "vm-ansible-${random_id.suffix.hex}-${each.key}"
+  machine_type = "e2-small"
+  zone         = each.key
 
-    boot_disk {
-        initialize_params {
-            image = data.google_compute_image.my_image.self_link
-        }
+  boot_disk {
+    initialize_params {
+      image = data.google_compute_image.my_image.self_link
     }
+  }
 
-    network_interface {
-        network = "default"
+  network_interface {
+    subnetwork = google_compute_subnetwork.default[each.key].self_link
 
-        access_config {
-        }
+    access_config {
+      network_tier = "STANDARD"
     }
+  }
 
-    metadata = {
-        ssh-keys  = "${split("@", data.google_client_openid_userinfo.me.email)[0]}:${tls_private_key.ssh.public_key_openssh}"
-        user-data = <<EOT
+  allow_stopping_for_update = true
+
+  metadata = {
+    ssh-keys       = "${split("@", data.google_client_openid_userinfo.me.email)[0]}:${tls_private_key.ssh.public_key_openssh}"
+    startup-script = <<EOF
+#!/bin/bash 
+command -v cloud-init &>/dev/null || (dnf install -y cloud-init && reboot) 
+EOF
+    user-data      = <<EOT
 #cloud-config# Create a group
 groups:
   - ansible
@@ -105,14 +112,12 @@ runcmd:
   - sudo apt install curl -q -y
   - echo "Done"
 EOT
+  }
+
+  tags = ["allow-ssh"]
+  labels = merge(local.tags,
+    {
+      usage = "ansible"
     }
-
-    metadata_startup_script = "sudo apt-get update && sudo apt-get install apache2 -y && echo '<!doctype html><html><body><h1>Avenue Code is the leading software consulting agency focused on delivering end-to-end development solutions for digital transformation across every vertical. We pride ourselves on our technical acumen, our collaborative problem-solving ability, and the warm professionalism of our teams.!</h1></body></html>' | sudo tee /var/www/html/index.html"
-
-    tags   = ["allow-ssh"]
-    labels = merge(local.tags, 
-        {
-            usage = "ansible"
-        }
-    )
+  )
 }
