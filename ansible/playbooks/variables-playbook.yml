@@ -1,0 +1,22 @@
+---
+- name: Variables playbook
+  hosts: all
+  become: yes
+  become_method: sudo
+  
+  vars:
+      state: latest
+      user: bob
+
+  tasks:
+  - name: Add the user {{ user }}
+    ansible.builtin.user:
+      name: "{{ user }}"
+  - name: upgrade all packages
+    dnf:
+      name: "*"
+      state: "{{ state }}"
+  - name: Install the {{ state }} of package "nginx"
+    dnf:
+      name: "nginx"
+      state: "{{ state }}"
