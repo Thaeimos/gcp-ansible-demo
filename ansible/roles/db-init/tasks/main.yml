@@ -32,3 +32,40 @@
     name: mongod.service
     state: started
     enabled: yes
+
+- name: Add singning keys for a group
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: Add repos for a group
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_16.x bionic main
+    state: present
+
+- name: Install NodeJS
+  apt:
+    name: nodejs
+    state: present
+
+- name: Install pm2
+  npm:
+    name: pm2
+    global: yes
+
+- name: Creates APP directory
+  file:
+    path: ~/app
+    state: directory
+
+- name: Deploy app
+  copy: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: '../../app-db/app.js', dest: '~/app/app.js' }
+    - { src: '../../app-db/db.js', dest: '~/app/app.js' }
+    - { src: '../../app-db/package.json', dest: '~/app/package.json' }
+    - { src: '../../app-db/package-lock.json', dest: '~/app/package-lock.json' }
+  notify:
+    - build app
+    - stop pm2
+    - start pm2
