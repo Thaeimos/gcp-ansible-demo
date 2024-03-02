@@ -66,7 +66,6 @@ resource "google_compute_firewall" "node_api" {
 
   target_tags = ["api"]
   source_tags = ["web"]
-  # source_ranges = ["${chomp(data.http.myip.response_body)}/32"]
 
   allow {
     protocol = "tcp"
