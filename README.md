@@ -11,3 +11,4 @@
 - [Whitelist only my IP only](./main.tf#L47) (Dynamically as well) for SSH connectivity.
 - Install "cloud-init" software [if image doesn't have it.](./main.tf#L93)
 - Configure instances using ["cloud-init" software with YAML.](./main.tf#L97)
+- Service account [setup](./terraform/init-project/main.tf#L16).
