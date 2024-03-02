@@ -18,8 +18,7 @@ RUN truncate -s0 /tmp/preseed.cfg; \
     apt-get install -y tzdata
 
 # Common packages
-RUN apt-get update
-RUN apt-get install -y apt-transport-https ca-certificates curl gnupg apt-utils python3 dnsutils git bsdmainutils csvkit shellcheck pip vim jq net-tools bash-completion yq python3.11-venv gnupg2 software-properties-common lsb-release gnupg wget unzip
+RUN apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg apt-utils python3 dnsutils git bsdmainutils csvkit shellcheck pip vim jq net-tools bash-completion yq python3.11-venv gnupg2 software-properties-common lsb-release gnupg wget unzip python3-google-auth
 
 # Google Cloud CLI
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
