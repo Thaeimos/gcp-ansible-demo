@@ -28,7 +28,7 @@ http {
     #gzip  on;
 
     upstream api {
-        server {{ groups['tag_api'][0] }}:3001;
+        server {{ hostvars[groups['tag_api'][0]].networkInterfaces[0].networkIP }}:3001;
     }
 
     server {
