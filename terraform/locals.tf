@@ -1,5 +1,4 @@
 locals {
-  apis            = ["compute.googleapis.com"]
   rotation_period = "2592000s" # 30 days
   algorithm       = "GOOGLE_SYMMETRIC_ENCRYPTION"
 
@@ -9,4 +8,6 @@ locals {
     managed-by = "terraform"
     project    = var.project
   }
+
+  sa_email = "ansible-test@rafael-415807.iam.gserviceaccount.com"
 }
