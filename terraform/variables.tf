@@ -21,5 +21,5 @@ variable "gcp_auth_file" {
 variable "vm_type" {
   description = "The type of machine to be used on compute engine."
   type        = string
-  default = "n1-standard-1"
+  default     = "n1-standard-1"
 }

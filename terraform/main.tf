@@ -38,7 +38,7 @@ resource "google_compute_firewall" "ssh-all" {
   name    = "ssh-all-terraform"
   network = google_compute_network.vpc_network.name
 
-  target_tags   = ["dev"]
+  target_tags = ["dev"]
   # source_ranges = ["${chomp(data.http.myip.response_body)}/32"]
   source_ranges = ["0.0.0.0/0"]
 
