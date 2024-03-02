@@ -19,6 +19,7 @@ module "service_accounts" {
   project_roles = [
     "${var.project}=>roles/editor",
     "${var.project}=>roles/storage.objectViewer",
+    "${var.project}=>roles/pubsub.serviceAgent",
   ]
 
   display_name = "Ansible SA"
