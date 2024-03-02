@@ -1,0 +1,18 @@
+---
+- name: build app
+  command: npm install
+  args:
+    chdir: ~/app
+
+- name: stop pm2
+  command: pm2 delete all
+  ignore_errors: True
+  become: yes
+  args:
+    chdir: ~/app
+
+- name: start pm2
+  command: pm2 start app.js
+  become: yes
+  args:
+    chdir: ~/app

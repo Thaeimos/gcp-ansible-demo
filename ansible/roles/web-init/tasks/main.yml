@@ -1,0 +1,29 @@
+---
+- name: Wait for VMs to start
+  wait_for_connection:
+
+- name: Add singning keys for a group
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+
+- name: Add repos for a group
+  apt_repository:
+    repo: deb https://nginx.org/packages/ubuntu/ bionic nginx
+    state: present
+
+- name: Install Nginx
+  apt:
+    name: nginx=1.20.1-1~bionic
+    state: present
+
+- name: Render config file
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: Enable services group
+  service:
+    name: nginx
+    state: started
+    enabled: yes

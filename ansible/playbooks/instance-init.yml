@@ -1,0 +1,18 @@
+---
+- hosts:
+    - "tag_api"
+  roles:
+    - api-init
+  become: yes
+
+- hosts:
+    - "tag_web"
+  roles:
+    - web-init
+  become: yes
+
+- hosts:
+    - "tag_db"
+  roles:
+    - db-init
+  become: yes

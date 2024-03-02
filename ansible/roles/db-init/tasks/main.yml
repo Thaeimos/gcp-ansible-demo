@@ -1,0 +1,34 @@
+---
+
+- name: Wait for VMs to start
+  wait_for_connection:
+
+- name: Add singning keys for a group
+  apt_key:
+    url: https://www.mongodb.org/static/pgp/server-4.4.asc
+    state: present
+
+- name: Add repos for a group
+  apt_repository:
+    repo: deb http://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse
+    state: present
+
+- name: Install MongoDB
+  apt:
+    name: mongodb-org=4.4.6
+    state: present
+  notify:
+    - restart mongo
+
+- name: Copy MongoDB config
+  copy:
+    src: mongod.conf
+    dest: /etc/mongod.conf
+  notify:
+    - restart mongo
+
+- name: mongoDB - Ensure that service is started and enabled
+  service:
+    name: mongod.service
+    state: started
+    enabled: yes

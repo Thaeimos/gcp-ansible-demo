@@ -1,0 +1,15 @@
+{
+  "name": "app-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/pubsub": "^2.19.0",
+    "mongoose": "^6.2.9"
+  }
+}

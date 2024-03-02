@@ -1,0 +1,9 @@
+---
+plugin: gcp_compute
+projects:
+  - rafael-415807
+auth_kind: serviceaccount
+service_account_file: /home/gcp-ansible-demo/terraform/ansible-test-sa.secrets
+keyed_groups:
+  - key: tags["items"]
+    prefix: tag
