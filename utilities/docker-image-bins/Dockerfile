@@ -50,7 +50,7 @@ RUN apt-get update && apt install -y ansible
 RUN wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_$(dpkg --print-architecture).zip
 RUN unzip terraform_${TF_VERSION}_linux_$(dpkg --print-architecture).zip
 RUN mv terraform /usr/local/bin/
-RUN echo 'complete -C /usr/bin/terraform terraform' >> /root/.bashrc
+RUN echo 'complete -C /usr/local/bin/terraform' >> /root/.bashrc
 
 # Gcloud init at login
 RUN echo 'gcloud init --console-only --skip-diagnostics' >> /root/.bashrc
