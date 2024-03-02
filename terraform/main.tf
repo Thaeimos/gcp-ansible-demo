@@ -74,19 +74,6 @@ resource "google_compute_firewall" "node_api" {
   }
 }
 
-resource "google_compute_firewall" "node_db" {
-  name    = "node-db-terraform-${random_id.suffix.hex}"
-  network = google_compute_network.vpc_network.name
-
-  target_tags = ["db"]
-  source_tags = ["api"]
-
-  allow {
-    protocol = "tcp"
-    ports    = ["3001"]
-  }
-}
-
 # SSH
 resource "tls_private_key" "ssh" {
   algorithm = "RSA"
