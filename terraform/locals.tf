@@ -9,5 +9,5 @@ locals {
     project    = var.project
   }
 
-  sa_email = "ansible-test@rafael-415807.iam.gserviceaccount.com"
+  sa_email = lookup(jsondecode(file(var.gcp_auth_file)), "client_email")
 }

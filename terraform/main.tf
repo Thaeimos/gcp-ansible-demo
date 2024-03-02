@@ -1,9 +1,5 @@
 data "google_client_openid_userinfo" "me" {}
 
-# resource "google_compute_network" "vpc_network" {
-#   name = "terraform-network"
-# }
-
 # Network
 data "google_compute_zones" "available" {}
 
@@ -39,8 +35,7 @@ resource "google_compute_firewall" "ssh-all" {
   network = google_compute_network.vpc_network.name
 
   target_tags = ["dev"]
-  # source_ranges = ["${chomp(data.http.myip.response_body)}/32"]
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = ["${chomp(data.http.myip.response_body)}/32"]
 
   allow {
     protocol = "tcp"
@@ -66,9 +61,9 @@ resource "google_compute_firewall" "node-api" {
   network = google_compute_network.vpc_network.name
 
   target_tags = ["api"]
-  # source_tags = ["web"]
+  source_tags = ["web"]
   # source_ranges = [var.subnet_cidr]
-  source_ranges = ["0.0.0.0/0"]
+  # source_ranges = ["0.0.0.0/0"]
 
   allow {
     protocol = "tcp"

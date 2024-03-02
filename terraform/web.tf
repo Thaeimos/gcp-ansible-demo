@@ -6,6 +6,7 @@ resource "google_compute_instance" "vm_web_instance" {
   name         = "vm-web"
   machine_type = "f1-micro"
   tags         = ["web", "dev"]
+  zone         = lookup((data.google_compute_zones.available), "names")[0]
 
   boot_disk {
     initialize_params {

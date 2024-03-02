@@ -6,6 +6,7 @@ resource "google_compute_instance" "vm_db_instance" {
   name         = "vm-db"
   machine_type = var.vm_type
   tags         = ["db", "dev"]
+  zone         = lookup((data.google_compute_zones.available), "names")[0]
 
   boot_disk {
     initialize_params {
