@@ -28,34 +28,35 @@
     state: started
     enabled: yes
 
-- name: Install UFW
-  apt:
-    name: ufw
-    state: present
+# Would need to do this process https://gist.github.com/kimus/9315140
+# - name: Install UFW
+#   apt:
+#     name: ufw
+#     state: present
 
-- name: Enable UFW on start
-  service:
-    name: ufw
-    state: started
-    enabled: yes
+# - name: Enable UFW on start
+#   service:
+#     name: ufw
+#     state: started
+#     enabled: yes
 
-- name: Deny everything and enable UFW
-  ufw:
-    state: enabled
-    policy: deny
+# - name: Deny everything and enable UFW
+#   ufw:
+#     state: enabled
+#     policy: deny
 
-- name: Set logging
-  ufw:
-    logging: 'on'
+# - name: Set logging
+#   ufw:
+#     logging: 'on'
 
-- name: Allow all access to tcp port 22
-  ufw:
-    rule: allow
-    port: '22'
-    proto: tcp
+# - name: Allow all access to tcp port 22
+#   ufw:
+#     rule: allow
+#     port: '22'
+#     proto: tcp
 
-- name: Allow all access to tcp port 80
-  ufw:
-    rule: allow
-    port: '80'
-    proto: tcp
+# - name: Allow all access to tcp port 80
+#   ufw:
+#     rule: allow
+#     port: '80'
+#     proto: tcp
