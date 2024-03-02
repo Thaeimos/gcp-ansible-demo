@@ -1,7 +1,7 @@
 ---
 plugin: gcp_compute
 projects:
-  - planhat-test-415609
+  - project-test-415609
 auth_kind: serviceaccount
 service_account_file: /home/gcp-ansible-demo/terraform/init-project/sa-ansible-key.json.secrets
 keyed_groups:
