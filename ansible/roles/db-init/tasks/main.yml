@@ -5,17 +5,17 @@
 
 - name: Add singning keys for a group
   apt_key:
-    url: https://www.mongodb.org/static/pgp/server-4.4.asc
+    url: https://www.mongodb.org/static/pgp/server-7.0.asc
     state: present
 
 - name: Add repos for a group
   apt_repository:
-    repo: deb http://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse
+    repo: deb http://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse
     state: present
 
 - name: Install MongoDB
   apt:
-    name: mongodb-org=4.4.6
+    name: mongodb-org #=4.4.6
     state: present
   notify:
     - restart mongo
@@ -40,7 +40,7 @@
 
 - name: Add repos for a group
   apt_repository:
-    repo: deb https://deb.nodesource.com/node_16.x bionic main
+    repo: deb https://deb.nodesource.com/node_16.x jammy main
     state: present
 
 - name: Install NodeJS
