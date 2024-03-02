@@ -1,17 +1,40 @@
 locals {
-    apis            = ["iam.googleapis.com", "compute.googleapis.com", "storage.googleapis.com", "cloudkms.googleapis.com"]
-    rotation_period = "2592000s" # 30 days
-    algorithm       = "GOOGLE_SYMMETRIC_ENCRYPTION"
+  apis            = ["iam.googleapis.com", "compute.googleapis.com", "storage.googleapis.com", "cloudkms.googleapis.com"]
+  rotation_period = "2592000s" # 30 days
+  algorithm       = "GOOGLE_SYMMETRIC_ENCRYPTION"
 }
 
 resource "google_project_service" "project" {
-    for_each = toset(local.apis)
-    project = var.project
-    service = each.key
+  for_each = toset(local.apis)
+  project  = var.project
+  service  = each.key
 }
 
 data "google_project" "project" {}
 data "google_storage_project_service_account" "gcs_account" {}
+
+module "service_accounts" {
+  source  = "terraform-google-modules/service-accounts/google"
+  version = "~> 4.0"
+
+  project_id    = var.project
+  prefix        = var.sa_prefix
+  names         = [var.sa_name]
+  generate_keys = true
+
+  project_roles = [
+    "${var.project}=>roles/editor",
+    "${var.project}=>roles/storage.objectViewer",
+  ]
+
+  display_name = "Ansible SA"
+  description  = "Ansible SA Description"
+}
+
+resource "local_file" "myaccountjson" {
+  content  = module.service_accounts.keys[var.sa_name]
+  filename = "${split("@", module.service_accounts.service_account.email)[0]}-key.json.secrets"
+}
 
 # Remote state bucket creation - Delay 60 secs
 resource "time_sleep" "wait" {
@@ -25,17 +48,17 @@ resource "random_id" "bucket_prefix" {
 }
 
 resource "google_kms_key_ring" "keyring" {
-  name = lower("kms-key-${random_id.bucket_prefix.hex}")
+  name     = lower("kms-key-${random_id.bucket_prefix.hex}")
   location = var.region
 
-  depends_on = [ 
-    google_project_service.project 
+  depends_on = [
+    google_project_service.project
   ]
 }
 
 resource "google_kms_crypto_key" "key" {
-  name = google_kms_key_ring.keyring.name
-  key_ring = google_kms_key_ring.keyring.id
+  name            = google_kms_key_ring.keyring.name
+  key_ring        = google_kms_key_ring.keyring.id
   rotation_period = local.rotation_period
 
   version_template {
@@ -52,8 +75,8 @@ resource "google_kms_crypto_key_iam_binding" "crypto_key" {
   crypto_key_id = google_kms_crypto_key.key.id
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
 
-  members       = [
-     "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}",
+  members = [
+    "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}",
   ]
 }
 

@@ -12,3 +12,9 @@ How to initialize the Terraform project and have a bucket for remote state.
 terraform init
 terraform apply
 ```
+
+# Search for roles for the service account
+```bash
+gcloud iam roles list --filter "cloudkms" # KMS related
+gcloud iam roles list --filter "Full control" # All admins roles
+```
