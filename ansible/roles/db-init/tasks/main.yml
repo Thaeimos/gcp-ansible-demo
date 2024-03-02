@@ -62,7 +62,7 @@
   copy: src={{ item.src }} dest={{ item.dest }}
   with_items:
     - { src: '../../app-db/app.js', dest: '~/app/app.js' }
-    - { src: '../../app-db/db.js', dest: '~/app/app.js' }
+    - { src: '../../app-db/db.js', dest: '~/app/db.js' }
     - { src: '../../app-db/package.json', dest: '~/app/package.json' }
     - { src: '../../app-db/package-lock.json', dest: '~/app/package-lock.json' }
   notify:

@@ -1,6 +1,27 @@
 'use strict';
 const db = require('./db')
 
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'verbose',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    //
+    // - Write all logs with importance level of `error` or less to `error.log`
+    // - Write all logs with importance level of `info` or less to `combined.log`
+    //
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'application.log' }),
+  ],
+});
+
+//
+// If we're not in production then log to the `console` with the format:
+// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
+//
+
 function main(
   subscriptionNameOrId = 'api_events',
   timeout = 60
@@ -21,15 +42,15 @@ function main(
     let messageCount = 0;
     const messageHandler = message => {
       const data = JSON.parse(message.data.toString())
-      console.log(`Received message ${message.id}:`);
-      console.log(`\tData: ${message.data}`);
-      console.log(`\tAttributes: ${message.attributes}`);
+      logger.info(`Received message ${message.id}:`);
+      logger.info(`\tData: ${message.data}`);
+      logger.info(`\tAttributes: ${message.attributes}`);
       messageCount += 1;
 
       // save message
       db.Message.create({msg: data.msg, msgId: message.id, attributes: message.attributes}, err => {
         if (err) {
-          console.error(err)
+          logger.error(err)
           return
         }
 
@@ -42,7 +63,7 @@ function main(
     subscription.on('message', messageHandler);
 
     setInterval(() => {
-      console.log(`${messageCount} message(s) received.`)
+      logger.info(`${messageCount} message(s) received.`)
       messageCount = 0
     }, timeout * 1000)
   }

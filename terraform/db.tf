@@ -57,6 +57,12 @@ runcmd:
 EOT
   }
 
+  service_account {
+    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    email  = local.sa_email
+    scopes = ["cloud-platform"]
+  }
+
   labels = merge(local.tags,
     {
       usage       = "ansible"
