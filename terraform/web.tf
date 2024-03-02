@@ -52,7 +52,7 @@ users:
 # to connect to this account# Run a few commands (update apt's repo indexes and install curl)
 runcmd:
   - sudo apt-get update
-  - sudo apt install curl -q -y
+  - sudo apt install curl vim -q -y
   - echo "Done"
 EOT
   }
