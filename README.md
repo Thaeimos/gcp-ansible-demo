@@ -15,4 +15,4 @@
 - [Minimal images](./main.tf#L26) for improved security footprint.
 - [Network ACL based on the tier](./main.tf#L67-L68) where we are: Web goes to API only and API goes to DB only.
 - [Pinned versions for software](./ansible/roles/web-init/tasks/main.yml#L17).
-- [Firewalled web server](./ansible/roles/web-init/tasks/main.yml#L31).
+- [Multiple upstream API servers](./ansible/roles/web-init/templates/nginx.conf.j2#L31-L33), via internal network.
