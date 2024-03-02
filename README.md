@@ -12,3 +12,5 @@
 - Install "cloud-init" software [if image doesn't have it.](./main.tf#L93)
 - Configure instances using ["cloud-init" software with YAML.](./main.tf#L97)
 - Service account [setup](./terraform/init-project/main.tf#L16).
+- [Minimal images](./main.tf#L26) for improved security footprint.
+- [Network ACL based on the tier](./main.tf#L67-L68) where we are: Web goes to API only and API goes to DB only.
