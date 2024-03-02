@@ -3,6 +3,7 @@ Ansible configs for VMs in GCP.
 
 
 # Make this work
+- Configure the proper project and service account values [here](./inventory/app.gcp.yml).
 - Execute the following commands:
 
 ```bash
