@@ -18,7 +18,8 @@ resource "google_compute_instance" "vm_api_instance" {
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-1804-bionic-v20220308"
+      # image = "ubuntu-1804-bionic-v20220308"
+      image = data.google_compute_image.my_image.self_link
     }
   }
 

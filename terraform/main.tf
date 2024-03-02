@@ -23,6 +23,10 @@ resource "random_id" "suffix" {
   byte_length = 8
 }
 
+data "google_compute_image" "my_image" {
+  family  = "ubuntu-minimal-2204-lts"
+  project = "ubuntu-os-cloud"
+}
 
 # Whitelist only my IP
 data "http" "myip" {
@@ -31,7 +35,7 @@ data "http" "myip" {
 
 
 resource "google_compute_firewall" "ssh-all" {
-  name    = "ssh-all-terraform"
+  name    = "ssh-all-terraform-${random_id.suffix.hex}"
   network = google_compute_network.vpc_network.name
 
   target_tags = ["dev"]
@@ -43,8 +47,8 @@ resource "google_compute_firewall" "ssh-all" {
   }
 }
 
-resource "google_compute_firewall" "http-web" {
-  name    = "http-web-terraform"
+resource "google_compute_firewall" "http_web" {
+  name    = "http-web-terraform-${random_id.suffix.hex}"
   network = google_compute_network.vpc_network.name
 
   target_tags   = ["web"]
@@ -56,14 +60,25 @@ resource "google_compute_firewall" "http-web" {
   }
 }
 
-resource "google_compute_firewall" "node-api" {
-  name    = "node-api-terraform"
+resource "google_compute_firewall" "node_api" {
+  name    = "node-api-terraform-${random_id.suffix.hex}"
   network = google_compute_network.vpc_network.name
 
   target_tags = ["api"]
   source_tags = ["web"]
-  # source_ranges = [var.subnet_cidr]
-  # source_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3001"]
+  }
+}
+
+resource "google_compute_firewall" "node_db" {
+  name    = "node-db-terraform-${random_id.suffix.hex}"
+  network = google_compute_network.vpc_network.name
+
+  target_tags = ["db"]
+  source_tags = ["api"]
 
   allow {
     protocol = "tcp"

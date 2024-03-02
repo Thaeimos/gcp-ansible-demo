@@ -10,3 +10,8 @@ Infra as code managed by Terraform.
 terraform init
 terraform apply
 ```
+
+# Find image types and family
+```bash
+gcloud compute images list --filter "ubuntu"
+```
